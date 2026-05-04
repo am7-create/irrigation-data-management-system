@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Executive Engineer — West Midnapore Division | Irrigation & Waterways Directorate</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#f4f1ec;font-family:'IBM Plex Sans',sans-serif;height:100vh;display:grid;grid-template-columns:270px 1fr}
+.sidebar{background:#1c1c1a;color:#e2ddd6;display:flex;flex-direction:column;padding:22px 16px;gap:22px;height:100vh;overflow-y:auto}
+.brand{font-size:14px;font-weight:500;border-bottom:1px solid #2e2e2a;padding-bottom:14px}
+.brand small{display:block;font-family:'IBM Plex Mono',monospace;font-size:9px;color:#5a5a52;margin-top:3px;letter-spacing:0.08em}
+.lbl{font-family:'IBM Plex Mono',monospace;font-size:9px;color:#5a5a52;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:5px}
+.stat{display:flex;justify-content:space-between;padding:6px 9px;background:#252520;border-radius:3px;margin-bottom:3px}
+.sl{font-size:11px;color:#888880}
+.sr{font-family:'IBM Plex Mono',monospace;font-size:11px;color:#e2ddd6}
+.sr.r{color:#d95f3b}.sr.g{color:#5a9e6f}
+.drop{border:1px dashed #3a3a34;border-radius:3px;padding:14px 10px;text-align:center;cursor:pointer;transition:border-color 0.15s}
+.drop:hover{border-color:#7a7a6e}
+.drop input{display:none}
+.drop p{font-size:11px;color:#6b6b60;line-height:1.5}
+.drop small{font-family:'IBM Plex Mono',monospace;font-size:9px;color:#3a3a34;display:block;margin-top:3px}
+.pbtn{width:100%;padding:9px;background:#d95f3b;border:none;border-radius:3px;color:#fff;font-size:12px;font-weight:500;cursor:pointer;margin-top:7px;transition:background 0.15s;font-family:'IBM Plex Sans',sans-serif}
+.pbtn:hover{background:#c04f2a}
+.pbtn:disabled{background:#2e2e2a;color:#5a5a52;cursor:not-allowed}
+.pbtn.done{background:#4a8a5f}
+.fnames{font-family:'IBM Plex Mono',monospace;font-size:9px;color:#5a5a52;margin-top:5px;max-height:60px;overflow-y:auto;line-height:1.7}
+.qbtn{display:block;width:100%;text-align:left;padding:6px 9px;background:transparent;border:1px solid #2e2e2a;border-radius:3px;color:#888880;font-size:11px;cursor:pointer;margin-bottom:3px;transition:all 0.15s;font-family:'IBM Plex Sans',sans-serif}
+.qbtn:hover{background:#252520;color:#e2ddd6;border-color:#4a4a42}
+.main{display:flex;flex-direction:column;height:100vh}
+.topbar{background:#fff;border-bottom:1px solid #e0dcd5;padding:12px 20px;display:flex;align-items:center;justify-content:space-between}
+.tt{font-size:13px;font-weight:500}
+.tm{font-family:'IBM Plex Mono',monospace;font-size:10px;color:#999890}
+.dot{display:inline-block;width:6px;height:6px;border-radius:50%;background:#5a9e6f;margin-right:5px;animation:blink 2s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0.3}}
+.chat{flex:1;overflow-y:auto;padding:20px;display:flex;flex-direction:column;gap:16px}
+.chat::-webkit-scrollbar{width:3px}
+.chat::-webkit-scrollbar-thumb{background:#d5d0c8}
+.msg{display:flex;gap:10px;max-width:700px;animation:fu 0.2s ease}
+@keyframes fu{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}
+.msg.user{flex-direction:row-reverse;align-self:flex-end}
+.av{width:26px;height:26px;border-radius:3px;font-family:'IBM Plex Mono',monospace;font-size:9px;font-weight:500;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px}
+.msg.ai .av{background:#1c1c1a;color:#e2ddd6}
+.msg.user .av{background:#d95f3b;color:#fff}
+.bub{padding:11px 13px;border-radius:3px;font-size:13px;line-height:1.65}
+.msg.ai .bub{background:#fff;border:1px solid #e0dcd5;color:#1c1c1a;border-top-left-radius:0}
+.msg.user .bub{background:#1c1c1a;color:#e2ddd6;border-top-right-radius:0}
+.mt{font-family:'IBM Plex Mono',monospace;font-size:9px;color:#b5b0a8;margin-top:4px;padding-left:2px}
+.msg.user .mt{text-align:right;padding-right:2px}
+table{width:100%;border-collapse:collapse;margin-top:10px;font-size:11px}
+th{background:#f4f1ec;padding:4px 7px;font-size:10px;font-family:'IBM Plex Mono',monospace;border:1px solid #e0dcd5;text-align:left;font-weight:500}
+td{padding:4px 7px;border:1px solid #e0dcd5;font-family:'IBM Plex Mono',monospace;color:#3a3a30}
+tr:hover td{background:#faf8f4}
+.hi{color:#d95f3b;font-weight:500}
+.ok{color:#4a8a5f;font-weight:500}
+.warn{color:#e0a020;font-weight:500}
+.typing{display:flex;gap:3px;padding:3px 0;align-items:center}
+.typing span{width:5px;height:5px;background:#b5b0a8;border-radius:50%;animation:td 1.2s infinite}
+.typing span:nth-child(2){animation-delay:0.2s}
+.typing span:nth-child(3){animation-delay:0.4s}
+@keyframes td{0%,80%,100%{transform:scale(1);opacity:0.3}40%{transform:scale(1.3);opacity:1}}
+.ibar{background:#fff;border-top:1px solid #e0dcd5;padding:12px 20px;display:flex;gap:10px;align-items:flex-end}
+.inp{flex:1;background:#f4f1ec;border:1px solid #ddd9d2;border-radius:3px;padding:9px 12px;font-family:'IBM Plex Sans',sans-serif;font-size:13px;color:#1c1c1a;resize:none;outline:none;min-height:40px;max-height:100px;transition:border-color 0.15s}
+.inp:focus{border-color:#888880}
+.inp::placeholder{color:#b5b0a8}
+.sbtn{padding:9px 15px;background:#1c1c1a;border:none;border-radius:3px;color:#e2ddd6;font-family:'IBM Plex Mono',monospace;font-size:11px;cursor:pointer;height:40px;transition:background 0.15s;white-space:nowrap}
+.sbtn:hover{background:#d95f3b}
+.sbtn:disabled{background:#e0dcd5;color:#b5b0a8;cursor:not-allowed}
+</style>
+</head>
+<body>
+
+<aside class="sidebar">
+  <div class="brand">
+    Executive Engineer
+    <small>WEST MIDNAPORE DIVISION</small>
+    <small>IRRIGATION & WATERWAYS DIRECTORATE</small>
+    <small>GOVERNMENT OF WEST BENGAL</small>
+  </div>
+
+  <div>
+    <div class="lbl">System Status</div>
+    <div class="stat"><span class="sl">Files loaded</span><span class="sr" id="sf">0</span></div>
+    <div class="stat"><span class="sl">Stations</span><span class="sr" id="ss">—</span></div>
+    <div class="stat"><span class="sl">Date range</span><span class="sr" id="sd" style="font-size:9px">—</span></div>
+    <div class="stat"><span class="sl">Danger alerts</span><span class="sr r" id="sa">0</span></div>
+    <div class="stat"><span class="sl">System</span><span class="sr g"><span class="dot"></span>online</span></div>
+  </div>
+
+  <div>
+    <div class="lbl">Upload Excel Files</div>
+    <div class="drop" id="dz" onclick="document.getElementById('fi').click()">
+      <p>Drop Excel files here<br>or click to browse</p>
+      <small>Morning · Evening · All months supported</small>
+      <input type="file" id="fi" multiple accept=".xlsx,.xls,.csv">
+    </div>
+    <div class="fnames" id="fn"></div>
+    <button class="pbtn" id="pb" onclick="loadFiles()" disabled>Load &amp; Analyse Files</button>
+  </div>
+
+  <div>
+    <div class="lbl">Quick Questions</div>
+    <button class="qbtn" onclick="ask('How much rainfall was recorded today?')">Rainfall today</button>
+    <button class="qbtn" onclick="ask('Which district had the highest rainfall?')">Highest rainfall district</button>
+    <button class="qbtn" onclick="ask('Are there any danger level alerts?')">Danger alerts</button>
+    <button class="qbtn" onclick="ask('Show all heavy rainfall stations above 64mm')">Heavy rainfall stations</button>
+    <button class="qbtn" onclick="ask('What is the cumulative rainfall from January?')">Cumulative rainfall</button>
+    <button class="qbtn" onclick="ask('Which rivers are rising?')">Rising rivers</button>
+    <button class="qbtn" onclick="ask('Show district wise rainfall summary')">District summary</button>
+    <button class="qbtn" onclick="ask('Compare morning and evening readings')">Morning vs evening</button>
+  </div>
+</aside>
+
+<main class="main">
+  <div class="topbar">
+    <div class="tt">Executive Engineer, West Midnapore Division — Irrigation &amp; Waterways Directorate, Govt. of West Bengal</div>
+    <div class="tm" id="tm">Upload your Excel files to begin</div>
+  </div>
+
+  <div class="chat" id="chat">
+    <div class="msg ai">
+      <div class="av">EE</div>
+      <div>
+        <div class="bub">
+          Welcome to the Rainfall Intelligence System<br>
+          <strong>Executive Engineer, West Midnapore Division</strong><br>
+          Irrigation &amp; Waterways Directorate, Government of West Bengal<br><br>
+          <strong>How to get started:</strong><br>
+          1. Upload your Excel files using the left panel<br>
+          2. Click <strong>Load &amp; Analyse Files</strong><br>
+          3. Ask questions about rainfall and river levels<br><br>
+          I can answer questions about:<br>
+          — Daily rainfall by station and district<br>
+          — River gauge levels and trends<br>
+          — Danger and extreme danger level alerts<br>
+          — Cumulative rainfall from January<br>
+          — Morning vs evening comparisons
+        </div>
+        <div class="mt">System ready</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="ibar">
+    <textarea class="inp" id="inp"
+      placeholder="Ask about today's rainfall, river levels, danger alerts..."
+      rows="1"
+      onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();send()}"
+      oninput="this.style.height='auto';this.style.height=Math.min(this.scrollHeight,100)+'px'"></textarea>
+    <button class="sbtn" id="sb" onclick="send()">Send →</button>
+  </div>
+</main>
+
+<script>
+// ── Data Storage ─────────────────────────────────────────────
+let files = [];
+let data  = { rainfall: [], gauge: [] };
+
+// ── File Upload ──────────────────────────────────────────────
+const fi = document.getElementById('fi');
+const dz = document.getElementById('dz');
+
+fi.addEventListener('change', e => stageFiles(Array.from(e.target.files)));
+dz.addEventListener('dragover', e => { e.preventDefault(); dz.style.borderColor = '#888'; });
+dz.addEventListener('dragleave', () => dz.style.borderColor = '');
+dz.addEventListener('drop', e => {
+  e.preventDefault();
+  dz.style.borderColor = '';
+  stageFiles(Array.from(e.dataTransfer.files));
+});
+
+function stageFiles(fs) {
+  const valid = fs.filter(f => f.name.match(/\.(xlsx|xls|csv)$/i) && !f.name.startsWith('~$'));
+  if (!valid.length) return;
+  files = [...files, ...valid];
+  document.getElementById('sf').textContent = files.length;
+  document.getElementById('fn').textContent = files.map(f => f.name).join('\n');
+  document.getElementById('pb').disabled = false;
+}
+
+function getDate(name) {
+  const m = name.match(/(\d{2})[.\-_](\d{2})[.\-_](\d{4})/);
+  return m ? `${m[3]}-${m[2]}-${m[1]}` : null;
+}
+
+function getSession(name) {
+  const l = name.toLowerCase();
+  return l.includes('morning') ? 'Morning' : l.includes('evening') ? 'Evening' : 'Report';
+}
+
+function sf(v) {
+  const n = parseFloat(v);
+  return isNaN(n) ? null : n;
+}
+
+function ss(v) {
+  const s = String(v || '').trim();
+  return ['nan', 'NaN', '', 'undefined', 'null'].includes(s) ? null : s;
+}
+
+// ── Load and Parse Excel Files ───────────────────────────────
+async function loadFiles() {
+  const btn = document.getElementById('pb');
+  btn.disabled = true;
+  btn.textContent = 'Reading files...';
+  data = { rainfall: [], gauge: [] };
+
+  for (const file of files) {
+    try {
+      const buf = await file.arrayBuffer();
+      const wb  = XLSX.read(buf, { type: 'array' });
+      const date    = getDate(file.name);
+      const session = getSession(file.name);
+
+      // Rainfall Sheet
+      const rs = wb.Sheets['Rainfall'] || wb.Sheets['rainfall'] || wb.Sheets[wb.SheetNames[0]];
+      if (rs) {
+        const rows = XLSX.utils.sheet_to_json(rs, { header: 1, defval: '' });
+        let basin = null, district = null;
+        for (let i = 4; i < rows.length; i++) {
+          const r = rows[i];
+          if (ss(r[1])) basin    = ss(r[1]);
+          if (ss(r[2])) district = ss(r[2]);
+          const loc  = ss(r[3]);
+          const type = ss(r[4]);
+          if (loc && type) {
+            data.rainfall.push({
+              date, session, file: file.name,
+              basin, district, location: loc, type,
+              rainfall_mm:    sf(r[5]),
+              cum_mm:         sf(r[6]),
+              normal_mm:      sf(r[7]),
+              division:       ss(r[8])
+            });
+          }
+        }
+      }
+
+      // River Gauge Sheet
+      const gs = wb.Sheets['River Gauge'] || wb.Sheets['river gauge'] || wb.Sheets[wb.SheetNames[1]];
+      if (gs) {
+        const rows = XLSX.utils.sheet_to_json(gs, { header: 1, defval: '' });
+        for (let i = 3; i < rows.length; i++) {
+          const r  = rows[i];
+          const sl = String(r[0] || '').trim();
+          if (!/^\d+$/.test(sl)) continue;
+          data.gauge.push({
+            date, session, file: file.name,
+            river:    ss(r[1]),
+            station:  ss(r[2]),
+            district: ss(r[3]),
+            level:    sf(r[4]),
+            trend:    ss(r[5]),
+            danger:   sf(r[6]),
+            extreme:  sf(r[7]),
+            division: ss(r[8])
+          });
+        }
+      }
+    } catch (e) {
+      console.warn('Error reading', file.name, e);
+    }
+  }
+
+  // Update stats
+  const dates    = [...new Set([...data.rainfall, ...data.gauge].map(r => r.date).filter(Boolean))].sort();
+  const stations = [...new Set(data.rainfall.map(r => r.location).filter(Boolean))];
+  const alerts   = data.gauge.filter(g => g.level !== null && g.danger !== null && g.level >= g.danger).length;
+
+  document.getElementById('ss').textContent = stations.length;
+  document.getElementById('sd').textContent = dates.length > 1
+    ? `${dates[0]} → ${dates[dates.length - 1]}`
+    : dates[0] || 'multiple';
+  document.getElementById('sa').textContent = alerts;
+  document.getElementById('tm').textContent =
+    `${files.length} files · ${dates.length} dates · ${data.rainfall.length} records`;
+
+  btn.textContent  = `✓ ${files.length} files loaded`;
+  btn.className    = 'pbtn done';
+
+  // Show top rainfall table
+  const top = data.rainfall
+    .filter(r => r.rainfall_mm !== null && r.rainfall_mm > 0)
+    .sort((a, b) => b.rainfall_mm - a.rainfall_mm)
+    .slice(0, 5);
+
+  const rows = top.map(r => `
+    <tr>
+      <td>${r.date || '—'}</td>
+      <td>${r.session}</td>
+      <td>${r.district || '—'}</td>
+      <td>${r.location}</td>
+      <td class="${r.rainfall_mm >= 64 ? 'hi' : r.rainfall_mm >= 15 ? 'warn' : 'ok'}">${r.rainfall_mm} mm</td>
+    </tr>`).join('');
+
+  addMsg('ai', `
+    ✓ <strong>${files.length} file(s) loaded successfully.</strong><br>
+    ${data.rainfall.length} rainfall records &nbsp;·&nbsp;
+    ${data.gauge.length} river gauge records &nbsp;·&nbsp;
+    ${alerts} danger alert(s)<br><br>
+    <strong>Top 5 rainfall readings in your data:</strong>
+    <table>
+      <tr><th>Date</th><th>Session</th><th>District</th><th>Station</th><th>Rainfall</th></tr>
+      ${rows}
+    </table><br>
+    You can now ask me anything about the rainfall or river levels!
+  `);
+}
+
+// ── Classify Rainfall (IMD Scale) ────────────────────────────
+function classify(mm) {
+  if (mm === null || mm === undefined) return 'No data';
+  if (mm === 0)   return 'No Rainfall';
+  if (mm < 15)    return 'Light';
+  if (mm < 64)    return 'Moderate';
+  if (mm < 115)   return 'Heavy';
+  if (mm < 204)   return 'Very Heavy';
+  return 'Extremely Heavy';
+}
+
+// ── Smart Rule-Based Answer Engine ──────────────────────────
+function smartAnswer(q) {
+  const ql = q.toLowerCase();
+
+  if (!data.rainfall.length && !data.gauge.length) {
+    return 'No data loaded yet. Please upload your WMD Excel files first using the left panel.';
+  }
+
+  const dates   = [...new Set(data.rainfall.map(r => r.date).filter(Boolean))].sort();
+  const latest  = dates[dates.length - 1];
+  const todayR  = data.rainfall.filter(r => r.date === latest && r.rainfall_mm !== null);
+  const todayG  = data.gauge.filter(r => r.date === latest);
+  const alerts  = data.gauge.filter(g => g.level !== null && g.danger !== null && g.level >= g.danger);
+  const extreme = data.gauge.filter(g => g.level !== null && g.extreme !== null && g.level >= g.extreme);
+
+  // ── RAINFALL TODAY ───────────────────────────────────────
+  if (ql.includes('rainfall today') || ql.includes('rain today') || ql.includes('how much rainfall') || ql.includes('today rainfall')) {
+    if (!todayR.length) return `No rainfall data found for the latest date (${latest}).`;
+    const total = todayR.reduce((s, r) => s + (r.rainfall_mm || 0), 0).toFixed(1);
+    const max   = todayR.sort((a, b) => b.rainfall_mm - a.rainfall_mm)[0];
+    const rows  = todayR.slice(0, 10).map(r =>
+      `<tr><td>${r.location}</td><td>${r.district || '—'}</td><td>${r.session}</td>
+       <td class="${r.rainfall_mm >= 64 ? 'hi' : r.rainfall_mm >= 15 ? 'warn' : 'ok'}">${r.rainfall_mm} mm</td>
+       <td>${classify(r.rainfall_mm)}</td></tr>`).join('');
+    return `
+      <strong>Rainfall Report — ${latest}</strong><br><br>
+      Total across all stations: <strong>${total} mm</strong><br>
+      Highest: <strong>${max.rainfall_mm} mm</strong> at ${max.location} (${max.district})<br>
+      IMD Category: <strong>${classify(max.rainfall_mm)}</strong><br><br>
+      <table>
+        <tr><th>Station</th><th>District</th><th>Session</th><th>Rainfall</th><th>Category</th></tr>
+        ${rows}
+      </table>`;
+  }
+
+  // ── HIGHEST RAINFALL ─────────────────────────────────────
+  if (ql.includes('highest') || ql.includes('maximum') || ql.includes('max rainfall')) {
+    const sorted = [...data.rainfall].filter(r => r.rainfall_mm !== null).sort((a, b) => b.rainfall_mm - a.rainfall_mm).slice(0, 5);
+    if (!sorted.length) return 'No rainfall data available.';
+    const rows = sorted.map(r =>
+      `<tr><td>${r.date}</td><td>${r.location}</td><td>${r.district || '—'}</td>
+       <td class="hi">${r.rainfall_mm} mm</td><td>${classify(r.rainfall_mm)}</td></tr>`).join('');
+    return `
+      <strong>Highest Rainfall Stations</strong><br><br>
+      <table>
+        <tr><th>Date</th><th>Station</th><th>District</th><th>Rainfall</th><th>Category</th></tr>
+        ${rows}
+      </table>`;
+  }
+
+  // ── DISTRICT SUMMARY ─────────────────────────────────────
+  if (ql.includes('district') || ql.includes('district wise') || ql.includes('district summary')) {
+    const distMap = {};
+    todayR.forEach(r => {
+      if (!r.district) return;
+      if (!distMap[r.district]) distMap[r.district] = { total: 0, max: 0, stations: 0 };
+      distMap[r.district].total    += r.rainfall_mm || 0;
+      distMap[r.district].max       = Math.max(distMap[r.district].max, r.rainfall_mm || 0);
+      distMap[r.district].stations += 1;
+    });
+    const sorted = Object.entries(distMap).sort((a, b) => b[1].total - a[1].total);
+    if (!sorted.length) return 'No district data available for latest date.';
+    const rows = sorted.map(([d, v]) =>
+      `<tr><td>${d}</td><td>${v.stations}</td>
+       <td class="${v.total >= 64 ? 'hi' : 'ok'}">${v.total.toFixed(1)} mm</td>
+       <td>${v.max.toFixed(1)} mm</td></tr>`).join('');
+    return `
+      <strong>District-wise Rainfall Summary — ${latest}</strong><br><br>
+      <table>
+        <tr><th>District</th><th>Stations</th><th>Total Rainfall</th><th>Max Rainfall</th></tr>
+        ${rows}
+      </table>`;
+  }
+
+  // ── DANGER ALERTS ────────────────────────────────────────
+  if (ql.includes('danger') || ql.includes('alert') || ql.includes('flood')) {
+    if (!alerts.length) {
+      return `✅ No danger level breaches found in the loaded data. All river gauges are within safe limits.`;
+    }
+    const rows = alerts.map(g =>
+      `<tr><td>${g.date}</td><td>${g.river || '—'}</td><td>${g.station || '—'}</td>
+       <td class="hi">${g.level} m</td><td>${g.danger} m</td>
+       <td class="${g.trend === 'Rising' ? 'hi' : 'ok'}">${g.trend || '—'}</td></tr>`).join('');
+    return `
+      🚨 <strong>${alerts.length} Danger Level Breach(es) Found</strong><br><br>
+      <table>
+        <tr><th>Date</th><th>River</th><th>Station</th><th>Level</th><th>Danger Level</th><th>Trend</th></tr>
+        ${rows}
+      </table>`;
+  }
+
+  // ── EXTREME DANGER ───────────────────────────────────────
+  if (ql.includes('extreme')) {
+    if (!extreme.length) {
+      return '✅ No extreme danger level breaches found in the loaded data.';
+    }
+    const rows = extreme.map(g =>
+      `<tr><td>${g.date}</td><td>${g.river || '—'}</td><td>${g.station || '—'}</td>
+       <td class="hi">${g.level} m</td><td>${g.extreme} m</td></tr>`).join('');
+    return `
+      🔴 <strong>${extreme.length} Extreme Danger Breach(es) Found</strong><br><br>
+      <table>
+        <tr><th>Date</th><th>River</th><th>Station</th><th>Level</th><th>Extreme Danger</th></tr>
+        ${rows}
+      </table>`;
+  }
+
+  // ── RISING RIVERS ────────────────────────────────────────
+  if (ql.includes('rising') || ql.includes('river level') || ql.includes('gauge')) {
+    const rising = data.gauge.filter(g => g.trend && g.trend.toLowerCase().includes('rising'));
+    if (!rising.length) return 'No rising river trends found in the data.';
+    const rows = rising.slice(0, 10).map(g =>
+      `<tr><td>${g.date}</td><td>${g.river || '—'}</td><td>${g.station || '—'}</td>
+       <td>${g.district || '—'}</td><td class="hi">${g.level || '—'} m</td></tr>`).join('');
+    return `
+      <strong>Rivers with Rising Trend — ${rising.length} found</strong><br><br>
+      <table>
+        <tr><th>Date</th><th>River</th><th>Station</th><th>District</th><th>Level</th></tr>
+        ${rows}
+      </table>`;
+  }
+
+  // ── HEAVY RAINFALL ───────────────────────────────────────
+  if (ql.includes('heavy') || ql.includes('above 64') || ql.includes('64mm')) {
+    const heavy = data.rainfall.filter(r => r.rainfall_mm !== null && r.rainfall_mm >= 64)
+      .sort((a, b) => b.rainfall_mm - a.rainfall_mm);
+    if (!heavy.length) return 'No heavy rainfall (≥64mm) found in the loaded data.';
+    const rows = heavy.slice(0, 10).map(r =>
+      `<tr><td>${r.date}</td><td>${r.location}</td><td>${r.district || '—'}</td>
+       <td class="hi">${r.rainfall_mm} mm</td><td>${classify(r.rainfall_mm)}</td></tr>`).join('');
+    return `
+      <strong>Heavy Rainfall Stations (≥64mm) — ${heavy.length} found</strong><br><br>
+      <table>
+        <tr><th>Date</th><th>Station</th><th>District</th><th>Rainfall</th><th>Category</th></tr>
+        ${rows}
+      </table>`;
+  }
+
+  // ── CUMULATIVE RAINFALL ──────────────────────────────────
+  if (ql.includes('cumulative') || ql.includes('from january') || ql.includes('cum')) {
+    const hasCum = data.rainfall.filter(r => r.cum_mm !== null).sort((a, b) => b.cum_mm - a.cum_mm);
+    if (!hasCum.length) return 'No cumulative rainfall data found in the loaded files.';
+    const rows = hasCum.slice(0, 10).map(r =>
+      `<tr><td>${r.location}</td><td>${r.district || '—'}</td>
+       <td class="ok">${r.cum_mm} mm</td><td>${r.normal_mm || '—'} mm</td></tr>`).join('');
+    return `
+      <strong>Cumulative Rainfall from 1st January</strong><br><br>
+      <table>
+        <tr><th>Station</th><th>District</th><th>Cumulative (mm)</th><th>Normal Annual (mm)</th></tr>
+        ${rows}
+      </table>`;
+  }
+
+  // ── MORNING VS EVENING ───────────────────────────────────
+  if (ql.includes('morning') || ql.includes('evening') || ql.includes('compare')) {
+    const morning = data.rainfall.filter(r => r.session === 'Morning' && r.rainfall_mm !== null);
+    const evening = data.rainfall.filter(r => r.session === 'Evening' && r.rainfall_mm !== null);
+    const mTotal  = morning.reduce((s, r) => s + r.rainfall_mm, 0).toFixed(1);
+    const eTotal  = evening.reduce((s, r) => s + r.rainfall_mm, 0).toFixed(1);
+    const mMax    = morning.length ? Math.max(...morning.map(r => r.rainfall_mm)) : 0;
+    const eMax    = evening.length ? Math.max(...evening.map(r => r.rainfall_mm)) : 0;
+    return `
+      <strong>Morning vs Evening Rainfall Comparison</strong><br><br>
+      <table>
+        <tr><th>Session</th><th>Records</th><th>Total Rainfall</th><th>Max Rainfall</th></tr>
+        <tr><td>Morning</td><td>${morning.length}</td><td>${mTotal} mm</td><td>${mMax} mm</td></tr>
+        <tr><td>Evening</td><td>${evening.length}</td><td>${eTotal} mm</td><td>${eMax} mm</td></tr>
+      </table>`;
+  }
+
+  // ── SUMMARY ──────────────────────────────────────────────
+  if (ql.includes('summary') || ql.includes('overview') || ql.includes('report')) {
+    const total = data.rainfall.filter(r => r.rainfall_mm !== null).reduce((s, r) => s + r.rainfall_mm, 0).toFixed(1);
+    const maxR  = [...data.rainfall].filter(r => r.rainfall_mm !== null).sort((a, b) => b.rainfall_mm - a.rainfall_mm)[0];
+    return `
+      <strong>WMD Data Summary</strong><br><br>
+      Files loaded: <strong>${files.length}</strong><br>
+      Date range: <strong>${dates[0]} to ${dates[dates.length - 1]}</strong><br>
+      Total rainfall records: <strong>${data.rainfall.length}</strong><br>
+      Total gauge records: <strong>${data.gauge.length}</strong><br>
+      Total rainfall: <strong>${total} mm</strong><br>
+      Highest reading: <strong>${maxR ? maxR.rainfall_mm + ' mm at ' + maxR.location + ' (' + maxR.district + ')' : '—'}</strong><br>
+      Danger alerts: <strong>${alerts.length}</strong><br>
+      Extreme danger: <strong>${extreme.length}</strong>`;
+  }
+
+  // ── DATE SPECIFIC ────────────────────────────────────────
+  const dateMatch = q.match(/(\d{4}-\d{2}-\d{2}|\d{2}[.\-\/]\d{2}[.\-\/]\d{4})/);
+  if (dateMatch) {
+    let searchDate = dateMatch[1];
+    const dm = searchDate.match(/(\d{2})[.\-\/](\d{2})[.\-\/](\d{4})/);
+    if (dm) searchDate = `${dm[3]}-${dm[2]}-${dm[1]}`;
+    const found = data.rainfall.filter(r => r.date === searchDate && r.rainfall_mm !== null);
+    if (!found.length) return `No rainfall data found for ${searchDate}.`;
+    const rows = found.sort((a, b) => b.rainfall_mm - a.rainfall_mm).slice(0, 10).map(r =>
+      `<tr><td>${r.location}</td><td>${r.district || '—'}</td>
+       <td class="${r.rainfall_mm >= 64 ? 'hi' : 'ok'}">${r.rainfall_mm} mm</td>
+       <td>${r.session}</td></tr>`).join('');
+    return `
+      <strong>Rainfall Data — ${searchDate}</strong><br><br>
+      <table>
+        <tr><th>Station</th><th>District</th><th>Rainfall</th><th>Session</th></tr>
+        ${rows}
+      </table>`;
+  }
+
+  // ── DEFAULT ──────────────────────────────────────────────
+  return `I can answer questions about:<br><br>
+    — <strong>Rainfall today</strong> — total and by station<br>
+    — <strong>District summary</strong> — district-wise totals<br>
+    — <strong>Highest rainfall</strong> — top stations<br>
+    — <strong>Danger alerts</strong> — gauge breaches<br>
+    — <strong>Heavy rainfall</strong> — stations above 64mm<br>
+    — <strong>Cumulative rainfall</strong> — from January<br>
+    — <strong>Rising rivers</strong> — gauge trends<br>
+    — <strong>Morning vs evening</strong> — session comparison<br><br>
+    Try one of the quick question buttons on the left!`;
+}
+
+// ── Chat Functions ───────────────────────────────────────────
+function ask(q) {
+  document.getElementById('inp').value = q;
+  send();
+}
+
+function getTime() {
+  return new Date().toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' });
+}
+
+function addMsg(role, html) {
+  const chat = document.getElementById('chat');
+  const d    = document.createElement('div');
+  d.className = `msg ${role}`;
+  const av = role === 'ai' ? 'EE' : 'You';
+  d.innerHTML = `
+    <div class="av">${av}</div>
+    <div>
+      <div class="bub">${html}</div>
+      <div class="mt">${getTime()}</div>
+    </div>`;
+  chat.appendChild(d);
+  chat.scrollTop = chat.scrollHeight;
+}
+
+function showTyping() {
+  const chat = document.getElementById('chat');
+  const d    = document.createElement('div');
+  d.className = 'msg ai';
+  d.id = 'typ';
+  d.innerHTML = `<div class="av">WMD</div><div><div class="bub"><div class="typing"><span></span><span></span><span></span></div></div></div>`;
+  chat.appendChild(d);
+  chat.scrollTop = chat.scrollHeight;
+}
+
+function removeTyping() {
+  const t = document.getElementById('typ');
+  if (t) t.remove();
+}
+
+function send() {
+  const inp = document.getElementById('inp');
+  const q   = inp.value.trim();
+  if (!q) return;
+  inp.value = '';
+  inp.style.height = 'auto';
+  document.getElementById('sb').disabled = true;
+
+  addMsg('user', q);
+  showTyping();
+
+  // Small delay to show typing indicator
+  setTimeout(() => {
+    removeTyping();
+    const answer = smartAnswer(q);
+    addMsg('ai', answer);
+    document.getElementById('sb').disabled = false;
+  }, 600);
+}
+</script>
+</body>
+</html>
