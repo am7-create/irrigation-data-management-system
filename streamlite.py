@@ -17,6 +17,8 @@ from backend.predict import (
     classify_rainfall,
     get_full_summary,
 )
+from backend.database import init_schema
+init_schema()
 
 st.set_page_config(
     page_title="WMD Irrigation Monitor",
