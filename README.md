@@ -17,7 +17,7 @@
 ### Prerequisites
 - Python 3.8+
 - MySQL Server (running locally or accessible)
-- Anthropic API key (for AI chatbot feature)
+
 
 ### Step 1: Clone/Extract Project
 ```bash
